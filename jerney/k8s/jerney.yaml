@@ -33,19 +33,28 @@ data:
   POSTGRES_DB: amVybmV5X2Ri
 
 ---
-# ---- EBS StorageClass (gp3) ----
+
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: jerney-ebs-sc
-provisioner: ebs.csi.aws.com
-parameters:
-  type: gp3
-  fsType: ext4
-  encrypted: "true"
-reclaimPolicy: Retain
+  name: ebs-sc
+provisioner: ebs.csi.eks.amazonaws.com
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
+reclaimPolicy: Delete
+# ---- EBS StorageClass (gp3) ----
+#apiVersion: storage.k8s.io/v1
+#kind: StorageClass
+#metadata:
+  #name: jerney-ebs-sc
+#provisioner: ebs.csi.aws.com
+#parameters:
+  #type: gp3
+  #fsType: ext4
+  #encrypted: "true"
+#reclaimPolicy: Retain
+#volumeBindingMode: WaitForFirstConsumer
+#allowVolumeExpansion: true
 
 ---
 # ---- PersistentVolumeClaim for PostgreSQL (EBS) ----
@@ -60,7 +69,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: jerney-ebs-sc
+  storageClassName: ebs-sc
   resources:
     requests:
       storage: 10Gi
@@ -180,7 +189,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: backend
-          image: BACKEND_IMAGE_PLACEHOLDER
+          image: sny17/jerney-backend:latest
           ports:
             - containerPort: 5000
               protocol: TCP
@@ -283,9 +292,9 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: frontend
-          image: FRONTEND_IMAGE_PLACEHOLDER
+          image: sny17/jerney-frontend:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               protocol: TCP
           resources:
             requests:
@@ -305,13 +314,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 8080
             initialDelaySeconds: 3
             periodSeconds: 5
 
@@ -332,7 +341,7 @@ spec:
     app.kubernetes.io/name: jerney-frontend
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
       protocol: TCP
 
 ---

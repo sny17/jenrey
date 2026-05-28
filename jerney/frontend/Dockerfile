@@ -1,8 +1,8 @@
 # ---- Build stage ----
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci && npm cache clean --force
+COPY package*.json ./
+RUN npm install && npm cache clean --force
 COPY . .
 RUN npm run build
 
@@ -27,6 +27,6 @@ RUN chown -R nginx:nginx /usr/share/nginx/html && \
 
 USER nginx
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]

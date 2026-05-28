@@ -49,7 +49,9 @@ module "eks" {
   # Auto Mode — EKS manages node groups, kube-proxy, CoreDNS, etc.
   cluster_compute_config = {
     enabled = true
+    node_pools = ["general-purpose"]
   }
+
 
   # Networking
   vpc_id     = module.vpc.vpc_id
