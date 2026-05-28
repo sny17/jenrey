@@ -11,7 +11,7 @@ FROM node:20-alpine AS production
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Security: remove unnecessary packages
-RUN apk add --no-cache dumb-init
+#RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
@@ -27,5 +27,5 @@ USER appuser
 EXPOSE 5000
 
 # Security: use dumb-init for proper signal handling (PID 1 problem)
-ENTRYPOINT ["dumb-init", "--"]
+#ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "src/index.js"]
