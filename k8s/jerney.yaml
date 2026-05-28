@@ -189,7 +189,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: backend
-          image: sny17/jerney-backend:latest
+          image: ghcr.io/sny17/jenrey/jerney-backend:4e6a7a4
           ports:
             - containerPort: 5000
               protocol: TCP
@@ -292,7 +292,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: frontend
-          image: sny17/jerney-frontend:latest
+          image: ghcr.io/sny17/jenrey/jerney-frontend:4e6a7a4
           ports:
             - containerPort: 8080
               protocol: TCP
